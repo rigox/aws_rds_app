@@ -19,7 +19,12 @@ var connection = mysql.createConnection({
     database:process.env.database,
 
 });
+//test
 
+
+const middle = () =>{
+       console.log("awesome")
+}
 
 connection.connect()
 
