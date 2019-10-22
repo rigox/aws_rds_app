@@ -1,50 +1,30 @@
-const express =  require("express")
-const app = express()
-const dotenv  = require("dotenv")
-const PORT =  process.env.PORT  || 5000
-const mysql =  require("mysql")
+const express  = require("express")
+const dotenv =  require("dotenv")
 const cors =  require("cors")
+const connectDB =  require("./config/db");
+const app =  express()
 
-//load enviromental variables
+const  user =  require("./routes/user")
+
 
 dotenv.config({path:'./config/config.env'})
-//apply middleware
-app.use(express.json(),express.urlencoded({extended:true}))
+
+connectDB();
+
+const PORT  =  process.env.PORT || 5000
+
+//load middleware
+app.use(express.json() , express.urlencoded({extended:true}))
 app.use(cors())
 
-var connection = mysql.createConnection({
-    host:process.env.host,
-    user:process.env.user,
-    password:process.env.password,
-    database:process.env.database,
-
-});
-//test
+//load routes
+app.use('/api/user', user)
 
 
-const middle = () =>{
-       console.log("awesome")
-}
-
-connection.connect()
-
-app.post('/api/user/register',(req,res)=>{
-
-        const  {name , email , password} = req.body
-        connection.query('insert into users(name,email,password) values(?,?,?)' ,[name,email, password], function(err,results,fiels){
-            if(err){throw err}
-            console.log("records inserted" , results)
-        });
-
-
-
-});
+app.listen(PORT , ()=>{
+      console.log(`listening on  PORT ${PORT}`)
+})
 
 
 
 
-
-
-app.listen(PORT, ()=>{
-    console.log(`listening on port ${PORT}`)   
-});
